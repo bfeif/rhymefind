@@ -11,7 +11,12 @@ class RhymeCouplet(models.Model):
     upvotes = models.IntegerField()
     downvotes = models.IntegerField()
     nsfw = models.BooleanField()
-    glove = ArrayField(models.FloatField())
+    # glove = ArrayField(models.FloatField())
+
+
+# add glove attributes to RhymeCouplet
+for i in range(100):
+    RhymeCouplet.add_to_class('glove_' + str(i), models.FloatField(null=True))
 
 
 # single word glove model
@@ -19,3 +24,8 @@ class Glove(models.Model):
     word = models.CharField(max_length=30)
     nsfw = models.BooleanField()
     glove = ArrayField(models.FloatField())
+
+
+# add glove attributes to RhymeCouplet
+for i in range(100):
+    Glove.add_to_class('glove_' + str(i), models.FloatField(null=True))
