@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import RhymeCouplet, Glove
 
-# Register your models here.
+admin.site.register(RhymeCouplet)
+admin.site.register(Glove)
