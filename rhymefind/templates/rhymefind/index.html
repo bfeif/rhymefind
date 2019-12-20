@@ -1,7 +1,21 @@
+{# random crap #}
 <ul>
-	{% for glove in gloves %}
+	{% for word in words %}
 	<li>
-		{{ glove.word }}
+		{{ word.word }}
 	</li>
 	{% endfor %}
 </ul>
+
+{# search box #}
+<form type="get" action="." style="margin: 0">
+    <input  id="search_box" type="text" name="search_box"  placeholder="Search..." >
+    <button id="search_submit" type="submit" >Submit</button>
+</form>
+
+{# print result #}
+{% if found_glove %}
+<p>{{ found_glove.glove_1}}</p>
+{% else %}
+<p>Didn't find anything!</p>
+{% endif %}
