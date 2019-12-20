@@ -11,8 +11,6 @@ class RhymeCouplet(models.Model):
     # fields to add
     date_added = models.DateField(auto_now_add=True)
     date_last_updated = models.DateField(auto_now=True)
-    upvotes = models.IntegerField(default=0)
-    downvotes = models.IntegerField(default=0)
     nsfw = models.BooleanField(default=False)
     
     # fields from Python model
