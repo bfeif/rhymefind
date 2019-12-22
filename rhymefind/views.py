@@ -4,14 +4,21 @@ from .models import RhymeCouplet, Glove
 from django.db.models import Func, F
 
 
-
 def index(request):
+
+	couplet_glove_names = ['glove_mean_'+str(i) for i in range(100)]
+	word_glove_names = ['glove_'+str(i) for i in range(100)]
+	zipped_names = zip(couplet_glove_names, word_glove_names)
 
 	if request.method == 'GET':
 		try:
 			query_word = request.GET.get('search_box')
 			found_word = Glove.objects.get(word=query_word)
-			couplets = RhymeCouplet.objects.annotate(abs_diff=Func(F('glove_mean_1') - found_word.glove_1, function='ABS')).order_by('abs_diff')[:5]
+			couplets = RhymeCouplet.objects.annotate(
+				abs_diff=Func(
+					sum([(F(couplet_glove_name) - getattr(found_word, word_glove_name))**2 for couplet_glove_name, word_glove_name in zipped_names]), 
+					function='ABS'
+					)).order_by('abs_diff')[:5]
 		except Glove.DoesNotExist:
 			found_word = None
 			couplets = None
