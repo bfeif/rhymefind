@@ -5,6 +5,8 @@ from django.contrib.postgres.fields import ArrayField
 NOTE: DJANGO does not actually update the schema of the db when you add a default value to a column
 '''
 
+max_length=100
+
 # rhyme couplet glove model
 class RhymeCouplet(models.Model):
 
@@ -14,8 +16,8 @@ class RhymeCouplet(models.Model):
     nsfw = models.BooleanField(default=False)
     
     # fields from Python model
-    word_1 = models.CharField(max_length=30)
-    word_2 = models.CharField(max_length=30)
+    word_1 = models.CharField(max_length=max_length)
+    word_2 = models.CharField(max_length=max_length)
     phoneme_seq_1 = ArrayField(models.CharField(max_length=3), null=True)
     phoneme_seq_2 = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
@@ -32,7 +34,7 @@ for i in range(100):
 
 # single word glove model
 class Glove(models.Model):
-    word = models.CharField(max_length=30)
+    word = models.CharField(max_length=max_length)
     nsfw = models.BooleanField(default=False)
 
     # method definition
