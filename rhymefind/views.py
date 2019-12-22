@@ -1,20 +1,20 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .models import RhymeCouplet, Glove
-from django.views import View, generic
+from django.db.models import Func, F
+
 
 
 def index(request):
 
-	words = Glove.objects.order_by('word')[:30]
 	if request.method == 'GET':
 		try:
-			search_word = request.GET.get('search_box')
-			found_glove = Glove.objects.get(word=search_word)
-			print('bandana jack')
+			query_word = request.GET.get('search_box')
+			found_word = Glove.objects.get(word=query_word)
+			couplets = RhymeCouplet.objects.annotate(abs_diff=Func(F('glove_mean_1') - found_word.glove_1, function='ABS')).order_by('abs_diff')[:5]
 		except Glove.DoesNotExist:
-			found_glove = None
+			found_word = None
+			couplets = None
 	template = loader.get_template('rhymefind/index.html')
-	context = {'words': words, 'found_glove': found_glove}
+	context = {'couplets': couplets, 'found_word': found_word}
 	return HttpResponse(template.render(context, request))
