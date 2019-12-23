@@ -7,6 +7,7 @@ gunicorn==20.0.4
 ipython==7.10.1
 ipython-genutils==0.2.0
 jedi==0.15.1
+mkl-fft==1.0.15
 mkl-service==2.3.0
 nltk==3.4.5
 numpy==1.17.4
