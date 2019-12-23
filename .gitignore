@@ -2,6 +2,7 @@
 
 # Project notes
 notes.txt
+data/*
 
 ### OSX ###
 .DS_Store
