@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 from django.template import loader
 from .models import RhymeCouplet, Glove
-from django.db.models import Func, F
+from django.db.models import Func, F, Q
 
 # Configure logger
 import logging
@@ -21,7 +21,7 @@ def index(request):
 		try:
 			found_word = Glove.objects.get(word=query_word)
 			logger.debug('found_word for rhyme couplet lookup is "{}"'.format(found_word))
-			couplets = RhymeCouplet.objects.annotate(
+			couplets = RhymeCouplet.objects.filter(~Q(word_1=found_word.word)).filter(~Q(word_2=found_word.word)).annotate(
 				abs_diff=Func(
 					sum([(F(couplet_glove_name) - getattr(found_word, word_glove_name))**2 for couplet_glove_name, word_glove_name in zipped_names]), 
 					function='ABS'
