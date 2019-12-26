@@ -1,3 +1,7 @@
+{# header #}
+<h1>RhymeFind</h1>
+<h2>What time is it?? It's rhyme time!!</h2>
+
 {# search box #}
 <form type="get" action="." style="margin: 0">
     <input  id="search_box" type="text" name="search_box"  placeholder="Search..." >
@@ -7,17 +11,16 @@
 {# print result #}
 {% if found_word %}
 
-{# display the word the person searched for #}
-<p>{{ found_word.word}}</p>
+<p><strong>Input: </strong>{{ found_word.word}}</p>
 
-{# display a list of best matches #}
-<ul>
+<p><strong>Output: </strong></p>
+<ol>
 	{% for couplet in couplets %}
 	<li>
 		{{ couplet.word_1 }}, {{ couplet.word_2 }}
 	</li>
 	{% endfor %}
-</ul>
+</ol>
 {% else %}
 <p>Didn't find anything!</p>
 {% endif %}
