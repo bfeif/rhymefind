@@ -16,16 +16,22 @@ class RhymeCouplet(models.Model):
     nsfw = models.BooleanField(default=False)
     
     # fields from Python model
-    word_1 = models.CharField(max_length=max_length, db_index=True)
-    word_2 = models.CharField(max_length=max_length, db_index=True)
+    word_1 = models.CharField(max_length=max_length)
+    word_2 = models.CharField(max_length=max_length)
     phoneme_seq_1 = ArrayField(models.CharField(max_length=3), null=True)
     phoneme_seq_2 = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
 
-    # index definition
+    # indexes
+    class Meta:
+        indexes = [
+            models.Index(fields=['word_1', 'word_2']),
+            models.Index(fields=['word_1']),
+            models.Index(fields=['word_2'])
+        ]
 
 
-    # method definition
+    # method definitions
     def __str__(self):
         return (self.word_1 + ', ' + self.word_2)
 
@@ -37,10 +43,20 @@ for i in range(100):
 
 # single word glove model
 class Glove(models.Model):
-    word = models.CharField(max_length=max_length, db_index=True)
+    
+    # fields
+    word = models.CharField(max_length=max_length)
     nsfw = models.BooleanField(default=False)
 
-    # method definition
+    # indexes
+    class Meta:
+        indexes = [
+            models.Index(fields=['word_1', 'word_2']),
+            models.Index(fields=['word_1']),
+            models.Index(fields=['word_2'])
+        ]
+
+    # method definitions
     def __str__(self):
         return (self.word)
 
