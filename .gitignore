@@ -4,6 +4,7 @@
 notes.txt
 data/*
 heroku_s3_data_upload_script.py
+scrap_space.py
 
 ### OSX ###
 .DS_Store
