@@ -25,9 +25,9 @@ class RhymeCouplet(models.Model):
     # indexes
     class Meta:
         indexes = [
-            models.Index(fields=['word_1', 'word_2']),
-            models.Index(fields=['word_1']),
-            models.Index(fields=['word_2'])
+            models.Index(fields=['word_1', 'word_2'], name="RhymeCouplet_word1_word2_idx"),
+            models.Index(fields=['word_1'], name="RhymeCouplet_word1_idx"),
+            models.Index(fields=['word_2'], name="RhymeCouplet_word2_idx")
         ]
 
 
@@ -51,9 +51,7 @@ class Glove(models.Model):
     # indexes
     class Meta:
         indexes = [
-            models.Index(fields=['word_1', 'word_2']),
-            models.Index(fields=['word_1']),
-            models.Index(fields=['word_2'])
+            models.Index(fields=['word'], name="Glove_word_idx"),
         ]
 
     # method definitions
