@@ -16,11 +16,14 @@ class RhymeCouplet(models.Model):
     nsfw = models.BooleanField(default=False)
     
     # fields from Python model
-    word_1 = models.CharField(max_length=max_length)
-    word_2 = models.CharField(max_length=max_length)
+    word_1 = models.CharField(max_length=max_length, db_index=True)
+    word_2 = models.CharField(max_length=max_length, db_index=True)
     phoneme_seq_1 = ArrayField(models.CharField(max_length=3), null=True)
     phoneme_seq_2 = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
+
+    # index definition
+
 
     # method definition
     def __str__(self):
@@ -34,7 +37,7 @@ for i in range(100):
 
 # single word glove model
 class Glove(models.Model):
-    word = models.CharField(max_length=max_length)
+    word = models.CharField(max_length=max_length, db_index=True)
     nsfw = models.BooleanField(default=False)
 
     # method definition
