@@ -18,6 +18,7 @@ def index(request):
 	if request.method == 'GET':
 		query_word = request.GET.get('search_box')
 		logger.debug('query_word is "{}"'.format(query_word))
+		query_word = query_word.lower()
 		try:
 			found_word = Glove.objects.get(word=query_word)
 			logger.debug('found_word for rhyme couplet lookup is "{}"'.format(found_word))
