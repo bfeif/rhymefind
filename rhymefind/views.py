@@ -62,7 +62,7 @@ def index(request):
 
 			print(t1-t0)
 			print(t2-t1)
-			print(t3-t2)
+
 			print(t3-t0)
 
 		except Glove.DoesNotExist:
@@ -71,7 +71,7 @@ def index(request):
 			logger.debug(
 				'No word found for query word "{}"'.format(query_word))
 			found_word = None
-			couplets = None
+			top_couplets = None
 
 	template = loader.get_template('rhymefind/index.html')
 	context = {'couplets': top_couplets, 'found_word': found_word}
