@@ -59,11 +59,13 @@ def index(request):
 			t3 = time.time()
 			logger.debug('rhyme couplets found for {found_word} are {couplets}'.format(
 				found_word=found_word, couplets=top_couplets))
+			print(top_couplets.all())
+			t4 = time.time()
 
 			print(t1-t0)
 			print(t2-t1)
-
-			print(t3-t0)
+			print(t3-t2)
+			print(t4-t3)
 
 		except Glove.DoesNotExist:
 
