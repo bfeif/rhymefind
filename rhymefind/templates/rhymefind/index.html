@@ -28,13 +28,11 @@
 
 	{# top words list #}
 	<h3>Some words that are fun to lookup...</h3>
-	<script type="text/javascript">
-		var x = "<ul>";
-		var array = ['magazine', 'paper', 'believe', 'feed', 'whiskey', 'rum', 'wrench', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer'];
-		for (i=0; i<array.length; i++) {
-		  x = x + "<li>" + array[i] + "</li>";
-		}
-		x += "</ul"
-		document.body.innerHTML += x;
-	</script>
+	<ul>
+		{% for fun_word in fun_words %}
+		<li>
+			{{ fun_word }}
+		</li>
+		{% endfor %}
+	</ul>
 </body>

@@ -9,6 +9,7 @@ import time
 import logging
 logger = logging.getLogger(__name__)
 
+fun_words = ['magazine', 'paper', 'believe', 'feed', 'whiskey', 'rum', 'wrench', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
 
 def index(request):
 
@@ -76,5 +77,5 @@ def index(request):
 			top_couplets = None
 
 	template = loader.get_template('rhymefind/index.html')
-	context = {'couplets': top_couplets, 'found_word': found_word}
+	context = {'couplets': top_couplets, 'found_word': found_word, 'fun_words': fun_words}
 	return HttpResponse(template.render(context, request))
