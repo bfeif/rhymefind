@@ -1,8 +1,6 @@
-<head>
-	<h1>RhymeFind</h1>
-</head>
+{% extends "rhymefind/base.html" %}
+{% block content %}
 
-<body>
 	{# search box #}
 	<form type="get" action="." style="margin: 0">
 	    <input  id="search_box" type="text" name="search_box"  placeholder="Search..." >
@@ -35,4 +33,4 @@
 		</li>
 		{% endfor %}
 	</ul>
-</body>
+{% endblock content %}
