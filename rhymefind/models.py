@@ -91,9 +91,9 @@ class RhymeCouplet50d(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=['word_1', 'word_2'],
-                         name="RhymeCouplet50d_word1_word2_idx"),
-            models.Index(fields=['word_1'], name="RhymeCouplet50d_word1_idx"),
-            models.Index(fields=['word_2'], name="RhymeCouplet50d_word2_idx")
+                         name="RhymeCoup50d_word1_word2_idx"),
+            models.Index(fields=['word_1'], name="RhymeCoup50d_word1_idx"),
+            models.Index(fields=['word_2'], name="RhymeCoup50d_word2_idx")
         ]
 
     # method definitions
