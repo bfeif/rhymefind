@@ -8,14 +8,14 @@ import time
 # Configure logger
 import logging
 logger = logging.getLogger(__name__)
-
+GLOVE_DIMENSIONS = 100
 fun_words = ['magazine', 'paper', 'believe', 'feed', 'whiskey', 'rum', 'wrench', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
 
 def index(request):
 
 	# constants for index view
-	couplet_glove_names = ['glove_mean_' + str(i) for i in range(100)]
-	word_glove_names = ['glove_' + str(i) for i in range(100)]
+	couplet_glove_names = ['glove_mean_' + str(i) for i in range(GLOVE_DIMENSIONS)]
+	word_glove_names = ['glove_' + str(i) for i in range(GLOVE_DIMENSIONS)]
 	zipped_names = list(zip(couplet_glove_names, word_glove_names))
 	window_size = 3
 
@@ -60,13 +60,12 @@ def index(request):
 			t3 = time.time()
 			logger.debug('rhyme couplets found for {found_word} are {couplets}'.format(
 				found_word=found_word, couplets=top_couplets))
-			print(top_couplets.all())
-			t4 = time.time()
 
-			print(t1-t0)
-			print(t2-t1)
-			print(t3-t2)
-			print(t4-t3)
+			# show timing results
+			# print(t1-t0)
+			# print(t2-t1)
+			# print(t3-t2)
+			print(t3-t0)
 
 		except Glove.DoesNotExist:
 
