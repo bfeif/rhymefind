@@ -13,19 +13,19 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 # load the models
-from rhymefind.models import Glove50d, RhymeCouplet50d
+from rhymefind.models import Glove32dIND, RhymeCouplet32dIND
 import pandas as pd
 from tqdm import tqdm
 data_location = './data/{name}_{dimensions}d.pkl'
 
-# # fill the rhymefind_Glove50d table with data
-# df = pd.read_pickle('./data/glove_df_50d.pkl')
-# for row_number, row in tqdm(df.iterrows()):
-# 	new_Glove50d = Glove50d(**row.to_dict())
-# 	new_Glove50d.save()
-
-# fill the rhymefind_RhymeCouplet50d table with data
-df = pd.read_pickle('./data/rhyme_couplet_glove_df_50d.pkl')
+# fill the rhymefind_Glove32dIND table with data
+df = pd.read_pickle('./data/glove_df_32d.pkl')
 for row_number, row in tqdm(df.iterrows()):
-	new_RhymeCouplet50d = RhymeCouplet50d(**row.to_dict())
-	new_RhymeCouplet50d.save()
+	new_Glove32dIND = Glove32dIND(**row.to_dict())
+	new_Glove32dIND.save()
+
+# fill the rhymefind_RhymeCouplet32dIND table with data
+df = pd.read_pickle('./data/rhyme_couplet_glove_df_32d.pkl')
+for row_number, row in tqdm(df.iterrows()):
+	new_RhymeCouplet32dIND = RhymeCouplet32dIND(**row.to_dict())
+	new_RhymeCouplet32dIND.save()
