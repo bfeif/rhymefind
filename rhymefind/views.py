@@ -9,7 +9,8 @@ import time
 import logging
 logger = logging.getLogger(__name__)
 GLOVE_DIMENSIONS = 100
-fun_words = ['magazine', 'paper', 'believe', 'feed', 'whiskey', 'rum', 'wrench', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
+fun_words = ['pirate', 'honey', 'magazine', 'paper', 'believe', 'feed', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
+
 
 def index(request):
 
