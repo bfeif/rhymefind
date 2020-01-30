@@ -57,17 +57,24 @@ def load_glove_dict(glove_dimensions=50, dimensions_to_reduce_to=-1):
     df = pd.DataFrame(map(process_glove_line, open(glove_data_path.format(
         glove_dimensions)).readlines()), columns=['word', 'glove'])
 
-    # do dimensionality reduction if necessary
+    # if dimensionality doesn't need to be reduced, then just return
     if dimensions_to_reduce_to == -1:
-        pass
+        
+        # return
+        return df
+
+    # else it does, then do the reduction and return the reduced frame
     else:
+        
+        # reduce the dataframe
         mat = np.vstack(df['glove'])
         reduced_mat = reduce_glove_dimensionality(mat, dimensions_to_reduce_to)
         reduced_df = pd.DataFrame()
         reduced_df['glove'] = reduced_mat.tolist()
-
-    # return
-    return df
+        new_df = pd.concat([df['word'], reduced_df], axis=1)
+    
+        # return
+        return new_df
 
 
 def reduce_glove_dimensionality(array, dimensions_to_reduce_to, plot=False):
