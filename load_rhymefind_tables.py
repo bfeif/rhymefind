@@ -12,19 +12,20 @@ os.chdir(proj_path)
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
-# load the model
-from rhymefind.models import Glove, RhymeCouplet
+# load the models
+from rhymefind.models import Glove50d, RhymeCouplet50d
 import pandas as pd
 from tqdm import tqdm
+data_location = './data/{name}_{dimensions}d.pkl'
 
-# fill the rhymefind_glove table with data
-df = pd.read_pickle('/Users/benfeifke/code/RhymeFinder/data_for_site_postgres/word_glove_dictionary.pkl')
-for row_number, row in tqdm(df.iterrows()):
-	new_Glove = Glove(**row.to_dict())
-	new_Glove.save()
+# # fill the rhymefind_Glove50d table with data
+# df = pd.read_pickle('./data/glove_df_50d.pkl')
+# for row_number, row in tqdm(df.iterrows()):
+# 	new_Glove50d = Glove50d(**row.to_dict())
+# 	new_Glove50d.save()
 
-# fill the rhymefind_rhymecouplet table with data
-df = pd.read_pickle('/Users/benfeifke/code/RhymeFinder/data_for_site_postgres/rhymecouplet_glove_dictionary.pkl')
+# fill the rhymefind_RhymeCouplet50d table with data
+df = pd.read_pickle('./data/rhyme_couplet_glove_df_50d.pkl')
 for row_number, row in tqdm(df.iterrows()):
-	new_RhymeCouplet = RhymeCouplet(**row.to_dict())
-	new_RhymeCouplet.save()
+	new_RhymeCouplet50d = RhymeCouplet50d(**row.to_dict())
+	new_RhymeCouplet50d.save()

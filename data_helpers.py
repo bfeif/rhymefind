@@ -94,6 +94,9 @@ def create_rhyme_couplet_glove_df(glove_table, rhyme_table):
     couplet_dictionary['glove_mean'] = np.split((np.vstack(couplet_dictionary['glove_1']) + np.vstack(
         couplet_dictionary['glove_2'])) / 2, indices_or_sections=len(couplet_dictionary), axis=0)
 
+    # drop superfluous columns
+    couplet_dictionary.drop(columns=['glove_1', 'glove_2', 'word_tuple'], inplace=True)
+
     # return
     return couplet_dictionary
 
@@ -116,5 +119,5 @@ def split_df_list_column(df, list_column_name):
                                              list_column_name + '_{}'.format(i) for i in range(unlisted_mat.shape[1])])
 
     # concatenate the results and return
-    new_df = pd.concat([df_wo_list_column, df_w_list_column_unlisted], axis=1)
+    new_df = pd.concat([df_wo_list_column.reset_index(drop=True), df_w_list_column_unlisted.reset_index(drop=True)], axis=1)
     return new_df
