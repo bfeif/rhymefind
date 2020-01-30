@@ -218,8 +218,8 @@ class RhymeCouplet32dIND(models.Model):
             models.Index(fields=['word_1', 'word_2'],
                          name="RC32dIND_word1_word2_idx"),
             models.Index(fields=['word_1'], name="RC32dIND_word1_idx"),
-            models.Index(fields=['word_2'], name="RC32dIND_word2_idx")#,
-            # models.Index(fields=['glove_mean_{}'.format(i) for i in range(32)])
+            models.Index(fields=['word_2'], name="RC32dIND_word2_idx"),
+            models.Index(fields=['glove_mean_{}'.format(i) for i in range(32)], name='RC32dIND_glove_idx')
         ]
 
     # method definitions
