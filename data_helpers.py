@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 glove_data_path = './data/glove.6B/glove.6B.{}d.txt'
 
 
@@ -55,14 +57,38 @@ def load_glove_dict(glove_dimensions=50, dimensions_to_reduce_to=-1):
     df = pd.DataFrame(map(process_glove_line, open(glove_data_path.format(
         glove_dimensions)).readlines()), columns=['word', 'glove'])
 
-    # do dimiensionality reduction if necessary
+    # do dimensionality reduction if necessary
     if dimensions_to_reduce_to == -1:
         pass
     else:
-        pass
+        mat = np.vstack(df['glove'])
+        reduced_mat = reduce_glove_dimensionality(mat, dimensions_to_reduce_to)
+        reduced_df = pd.DataFrame()
+        reduced_df['glove'] = reduced_mat.tolist()
 
     # return
     return df
+
+
+def reduce_glove_dimensionality(array, dimensions_to_reduce_to, plot=False):
+    '''
+    Reduce the dimensionaliity of a word embeddings matrix, using the strategy desribed in
+    Simple and Effective Dimensionality Reduction for Word Embeddings https://arxiv.org/pdf/1708.03629.pdf
+    '''
+
+    # subtract mean word embedding
+    array_mean = np.mean(array, axis=0)
+    array = array - array_mean
+
+    # perform pca and keep only the dimensions to reduce to
+    pca = PCA(n_components=dimensions_to_reduce_to)
+    array_PCAd = pca.fit_transform(array)
+    if plot:
+        plt.plot(pca.explained_variance_ratio_)
+        plt.show()
+
+    # return
+    return array_PCAd
 
 
 def create_rhyme_couplet_glove_df(glove_table, rhyme_table):
@@ -95,7 +121,8 @@ def create_rhyme_couplet_glove_df(glove_table, rhyme_table):
         couplet_dictionary['glove_2'])) / 2, indices_or_sections=len(couplet_dictionary), axis=0)
 
     # drop superfluous columns
-    couplet_dictionary.drop(columns=['glove_1', 'glove_2', 'word_tuple'], inplace=True)
+    couplet_dictionary.drop(
+        columns=['glove_1', 'glove_2', 'word_tuple'], inplace=True)
 
     # return
     return couplet_dictionary
@@ -119,5 +146,6 @@ def split_df_list_column(df, list_column_name):
                                              list_column_name + '_{}'.format(i) for i in range(unlisted_mat.shape[1])])
 
     # concatenate the results and return
-    new_df = pd.concat([df_wo_list_column.reset_index(drop=True), df_w_list_column_unlisted.reset_index(drop=True)], axis=1)
+    new_df = pd.concat([df_wo_list_column.reset_index(
+        drop=True), df_w_list_column_unlisted.reset_index(drop=True)], axis=1)
     return new_df
