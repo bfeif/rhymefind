@@ -70,6 +70,70 @@ for i in range(100):
 
 
 ################################################################
+# 32d WITH INDEX tables
+
+# rhyme couplet glove model
+class RhymeCouplet32dIND(models.Model):
+
+    # fields to add
+    date_added = models.DateField(auto_now_add=True)
+    date_last_updated = models.DateField(auto_now=True)
+    nsfw = models.BooleanField(default=False)
+
+    # fields from Python model
+    word_1 = models.CharField(max_length=max_length)
+    word_2 = models.CharField(max_length=max_length)
+    phoneme_seq_1 = ArrayField(models.CharField(max_length=3), null=True)
+    phoneme_seq_2 = ArrayField(models.CharField(max_length=3), null=True)
+    rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
+
+    # indexes
+    class Meta:
+        indexes = [
+            models.Index(fields=['word_1', 'word_2'],
+                         name="RC32dIND_word1_word2_idx"),
+            models.Index(fields=['word_1'], name="RC32dIND_word1_idx"),
+            models.Index(fields=['word_2'], name="RC32dIND_word2_idx"),
+            models.Index(fields=['glove_mean_{}'.format(i) for i in range(32)], name='RC32dIND_glove_idx')
+        ]
+
+    # method definitions
+    def __str__(self):
+        return (self.word_1 + ', ' + self.word_2)
+
+
+# add glove attributes to RhymeCouplet
+for i in range(32):
+    RhymeCouplet32dIND.add_to_class(
+        'glove_mean_' + str(i), models.FloatField(null=True))
+
+
+# single word glove model
+class Glove32dIND(models.Model):
+
+    # fields
+    word = models.CharField(max_length=max_length)
+    nsfw = models.BooleanField(default=False)
+
+    # indexes
+    class Meta:
+        indexes = [
+            models.Index(fields=['word'], name="Glove32dIND_word_idx"),
+        ]
+
+    # method definitions
+    def __str__(self):
+        return (self.word)
+
+
+# add glove attributes to RhymeCouplet
+for i in range(32):
+    Glove32dIND.add_to_class('glove_' + str(i), models.FloatField(null=True))
+
+'''
+THE CODE BELOW IS FOR TIME TESTING PURPOSES
+
+################################################################
 # 50d tables
 
 # rhyme couplet glove model
@@ -190,67 +254,4 @@ class Glove32d(models.Model):
 # add glove attributes to RhymeCouplet
 for i in range(32):
     Glove32d.add_to_class('glove_' + str(i), models.FloatField(null=True))
-
-
-
-
-################################################################
-# 32d WITH INDEX tables
-
-# rhyme couplet glove model
-class RhymeCouplet32dIND(models.Model):
-
-    # fields to add
-    date_added = models.DateField(auto_now_add=True)
-    date_last_updated = models.DateField(auto_now=True)
-    nsfw = models.BooleanField(default=False)
-
-    # fields from Python model
-    word_1 = models.CharField(max_length=max_length)
-    word_2 = models.CharField(max_length=max_length)
-    phoneme_seq_1 = ArrayField(models.CharField(max_length=3), null=True)
-    phoneme_seq_2 = ArrayField(models.CharField(max_length=3), null=True)
-    rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
-
-    # indexes
-    class Meta:
-        indexes = [
-            models.Index(fields=['word_1', 'word_2'],
-                         name="RC32dIND_word1_word2_idx"),
-            models.Index(fields=['word_1'], name="RC32dIND_word1_idx"),
-            models.Index(fields=['word_2'], name="RC32dIND_word2_idx"),
-            models.Index(fields=['glove_mean_{}'.format(i) for i in range(32)], name='RC32dIND_glove_idx')
-        ]
-
-    # method definitions
-    def __str__(self):
-        return (self.word_1 + ', ' + self.word_2)
-
-
-# add glove attributes to RhymeCouplet
-for i in range(32):
-    RhymeCouplet32dIND.add_to_class(
-        'glove_mean_' + str(i), models.FloatField(null=True))
-
-
-# single word glove model
-class Glove32dIND(models.Model):
-
-    # fields
-    word = models.CharField(max_length=max_length)
-    nsfw = models.BooleanField(default=False)
-
-    # indexes
-    class Meta:
-        indexes = [
-            models.Index(fields=['word'], name="Glove32dIND_word_idx"),
-        ]
-
-    # method definitions
-    def __str__(self):
-        return (self.word)
-
-
-# add glove attributes to RhymeCouplet
-for i in range(32):
-    Glove32dIND.add_to_class('glove_' + str(i), models.FloatField(null=True))
+'''

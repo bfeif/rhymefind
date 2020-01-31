@@ -1,14 +1,14 @@
 # imports
 from django.http import HttpResponse
 from django.template import loader
-from .models import RhymeCouplet, Glove
+from .models import RhymeCouplet32dIND, Glove32dIND
 from django.db.models import Func, F, Q
 import time
 
 # Configure logger
 import logging
 logger = logging.getLogger(__name__)
-GLOVE_DIMENSIONS = 100
+GLOVE_DIMENSIONS = 32
 fun_words = ['pirate', 'honey', 'magazine', 'paper', 'believe', 'feed', 'america', 'indigenous', 'radical', 'coup', 'feast', 'facelift', 'genuine', 'rate', 'archaeologist', 'breathe', 'blunt', 'leader', 'raft', 'heart', 'orthogonal', 'wow', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
 
 
@@ -31,9 +31,9 @@ def index(request):
 		# run the query
 		try:
 
-			# get the glove object
+			# get the Glove32dIND object
 			t0 = time.time()
-			found_word = Glove.objects.get(word=query_word)
+			found_word = Glove32dIND.objects.get(word=query_word)
 			logger.debug(
 				'found_word for rhyme couplet lookup is "{}"'.format(found_word))
 
@@ -46,7 +46,7 @@ def index(request):
 
 			# run the query
 			t1 = time.time()
-			boxed_couplets = RhymeCouplet.objects.\
+			boxed_couplets = RhymeCouplet32dIND.objects.\
 				filter(~Q(word_1=found_word.word)).\
 				filter(~Q(word_2=found_word.word)).\
 				filter(**lt_filter_kwargs)
@@ -63,14 +63,11 @@ def index(request):
 				found_word=found_word, couplets=top_couplets))
 
 			# show timing results
-			# print(t1-t0)
-			# print(t2-t1)
-			# print(t3-t2)
 			print(t3-t0)
 
-		except Glove.DoesNotExist:
+		except Glove32dIND.DoesNotExist:
 
-			# if the glove does not exist
+			# if the Glove32dIND does not exist
 			logger.debug(
 				'No word found for query word "{}"'.format(query_word))
 			found_word = None
