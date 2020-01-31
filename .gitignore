@@ -1,7 +1,7 @@
 # Created by https://www.gitignore.io
 
 # Project notes and data run scripts
-notes.txt
+notes/*
 data/*
 heroku_s3_data_upload_script.py
 scrap_space.py
