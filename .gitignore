@@ -6,6 +6,7 @@ data/*
 heroku_s3_data_upload_script.py
 scrap_space.py
 staticfiles/*
+time_tester.py
 
 ### OSX ###
 .DS_Store
