@@ -9,8 +9,9 @@ GLOVE_LOCATION = './data/glove.6B/{}'
 LOAD_GLOVE_DIMENSIONS = 50
 SAVE_GLOVE_DIMENSIONS = 32
 CMU_PRONUNCIATION_DICTIONARY_LOCATION = './'
-NUM_PARTS_TO_SAVE_AS = 1
-PATH_TO_SAVE = './data/{name}_{dimensions}d.pkl'
+NUM_PARTS_TO_SAVE_AS = 40
+PATH_TO_SAVE = './data/'
+NAME_TO_SAVE = '{name}_{dimensions}d'
 
 # load the cmu dictionary to a dataframe
 rhyme_df = load_cmu_dict()
@@ -28,7 +29,7 @@ rhyme_couplet_glove_df = split_df_list_column(
 glove_df = split_df_list_column(glove_df, 'glove')
 
 # save out the files
-rhyme_couplet_glove_df.to_pickle(PATH_TO_SAVE.format(
-    name='rhyme_couplet_glove_df', dimensions=str(SAVE_GLOVE_DIMENSIONS)), protocol=4)
-glove_df.to_pickle(PATH_TO_SAVE.format(
-    name='glove_df', dimensions=str(SAVE_GLOVE_DIMENSIONS)), protocol=4)
+save_table(rhyme_couplet_glove_df, PATH_TO_SAVE, NAME_TO_SAVE.format(name='rhyme_couplet_glove_df',
+                                                       dimensions=str(SAVE_GLOVE_DIMENSIONS)), num_parts=NUM_PARTS_TO_SAVE_AS)
+save_table(glove_df, PATH_TO_SAVE, NAME_TO_SAVE.format(name='glove_df', dimensions=str(
+    SAVE_GLOVE_DIMENSIONS)), num_parts=NUM_PARTS_TO_SAVE_AS)

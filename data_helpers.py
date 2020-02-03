@@ -1,3 +1,5 @@
+import os
+import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -156,3 +158,23 @@ def split_df_list_column(df, list_column_name):
     new_df = pd.concat([df_wo_list_column.reset_index(
         drop=True), df_w_list_column_unlisted.reset_index(drop=True)], axis=1)
     return new_df
+
+
+def save_table(df, path, name, num_parts=1):
+    '''
+    Saves out the generated data
+    '''
+
+    # If you want to save it out as only one file
+    if num_parts==1:
+        df.to_pickle(path + name + '.pkl', protocol=4)
+    
+    # If you want to save it out in parts
+    else:
+        os.mkdir(path + name)
+        part_length = math.ceil(len(df)/num_parts)
+        for i in range(num_parts):
+            start = i * part_length
+            end = (i + 1) * part_length
+            df_part = df.iloc[start:end, :]
+            df_part.to_pickle(path + name + '/' + name + '_part' + str(i) + '.pkl', protocol=4)
