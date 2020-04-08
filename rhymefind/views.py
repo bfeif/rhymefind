@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 GLOVE_DIMENSIONS = 32
 fun_words = ['pirate', 'paper', 'marriage', 'believe', 'feed', 'america', 'indigenous', 'radical', 'coup', 'feast', 'archaeologist', 'blunt',
-             'leader', 'raft', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'priest', 'prostitute', 'computer']
+             'leader', 'raft', 'trade', 'newspaper', 'piano', 'flagrant', 'manager', 'football', 'nonsense', 'prostitute', 'computer']
 
 
 def index(request):
