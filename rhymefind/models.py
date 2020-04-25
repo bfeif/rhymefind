@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 
 '''
 NOTE: DJANGO does not actually update the schema of the db when you add a default value to a column
@@ -103,6 +103,8 @@ for i in range(32):
     RhymeCouplet32dIND.add_to_class(
         'glove_mean_' + str(i), models.FloatField(null=True))
 
+def rhyme_pair_neighbors_default():
+    return {'rhyme_pair_neighbors': []}
 
 # single word glove model
 class Glove32dIND(models.Model):
@@ -110,6 +112,7 @@ class Glove32dIND(models.Model):
     # fields
     word = models.CharField(max_length=max_length)
     nsfw = models.BooleanField(default=False)
+    rhyme_pair_neighbors = JSONField(default=rhyme_pair_neighbors_default)
 
     # indexes
     class Meta:
