@@ -34,7 +34,6 @@ def index(request):
         try:
 
             # get the Glove32dIND object
-            t0 = time.time()
             found_word = Glove32dIND.objects.get(word=query_word)
             logger.debug(
                 'found_word for rhyme couplet lookup is "{}"'.format(found_word))
@@ -47,12 +46,10 @@ def index(request):
             lt_filter_kwargs.update(gt_filter_kwargs)
 
             # run the query
-            t1 = time.time()
             boxed_couplets = RhymeCouplet32dIND.objects.\
                 filter(~Q(word_1=found_word.word)).\
                 filter(~Q(word_2=found_word.word)).\
                 filter(**lt_filter_kwargs)
-            t2 = time.time()
             ordered_couplets = boxed_couplets.annotate(
                 abs_diff=Func(
                     sum([(F(couplet_glove_name) - getattr(found_word, word_glove_name))
@@ -61,12 +58,8 @@ def index(request):
                 )).\
                 order_by('abs_diff')
             top_couplets = ordered_couplets[:10]
-            t3 = time.time()
             logger.debug('rhyme couplets found for {found_word} are {couplets}'.format(
                 found_word=found_word, couplets=top_couplets))
-
-            # show timing results
-            print(t3 - t0)
 
         except Glove32dIND.DoesNotExist:
 
