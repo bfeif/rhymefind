@@ -14,8 +14,6 @@ max_length = 100
 class RhymeCouplet(models.Model):
 
     # fields to add
-    date_added = models.DateField(auto_now_add=True)
-    date_last_updated = models.DateField(auto_now=True)
     nsfw = models.BooleanField(default=False)
 
     # fields from Python model
@@ -76,8 +74,6 @@ for i in range(100):
 class RhymeCouplet32dIND(models.Model):
 
     # fields to add
-    date_added = models.DateField(auto_now_add=True)
-    date_last_updated = models.DateField(auto_now=True)
     nsfw = models.BooleanField(default=False)
 
     # fields from Python model
