@@ -7,6 +7,8 @@ heroku_s3_data_upload_script.py
 scrap_space.py
 staticfiles/*
 time_tester.py
+fill_rhyme_pair_neighbors_attr.py
+temp.json
 
 ### OSX ###
 .DS_Store
