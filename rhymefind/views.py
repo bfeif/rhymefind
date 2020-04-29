@@ -3,7 +3,6 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import RhymeCouplet32dIND, Glove32dIND
 from django.db.models import Func, F, Q
-import time
 
 # Configure logger
 import logging
