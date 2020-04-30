@@ -2,6 +2,7 @@ import os
 import math
 import pandas as pd
 import numpy as np
+import re
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 glove_data_path = './data/glove.6B/glove.6B.{}d.txt'
@@ -20,7 +21,7 @@ def process_cmu_line(x):
     CMU loading helper function
     '''
     splitted = x.split()
-    return (splitted[0].lower(), splitted[1:])
+    return (re.sub(r"\(.*?\)","",splitted[0].lower()), splitted[1:])
 
 
 def convert_phoneme_seq_to_rhyme_seq(phoneme_seq):
@@ -99,6 +100,28 @@ def reduce_glove_dimensionality(array, dimensions_to_reduce_to, plot=False):
     # return
     return array_PCAd
 
+def create_rhyme_couplet_df(word_df):
+    
+    # do the merge
+    couplet_df = word_df.merge(word_df, how='inner', left_on='rhyme_seq', right_on='rhyme_seq', suffixes=('_1', '_2'))
+
+    # get rid of couplets of the same word, e.g. ['and', 'and']
+    couplet_df = couplet_df[couplet_df.word_1 != couplet_df.word_2]
+
+    # get rid of duplicates, e.g. ['and', 'band'] vs ['band', 'and']
+    couplet_df['word_tuple'] = couplet_df.apply(
+        lambda x: tuple(sorted([x['word_1'], x['word_2']])), axis=1)
+    couplet_df.drop_duplicates(subset=['word_tuple'], inplace=True)
+
+    # get glove mean
+    couplet_df['glove_mean'] = np.split((np.vstack(couplet_df['glove_1']) + np.vstack(
+        couplet_df['glove_2'])) / 2, indices_or_sections=len(couplet_df), axis=0)
+
+    # drop superfluous columns
+    couplet_df.drop(columns=['glove_1', 'glove_2', 'word_tuple', 'phoneme_seq_1', 'phoneme_seq_2', 'rhyme_seq'], inplace=True)
+
+    # return
+    return couplet_df
 
 def create_rhyme_couplet_glove_df(glove_table, rhyme_table):
     '''
