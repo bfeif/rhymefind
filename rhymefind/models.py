@@ -1,10 +1,33 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from datetime import datetime
 max_length = 100
 
 '''
 NOTE: DJANGO does not actually update the schema of the db when you add a default value to a column
 '''
+
+class Word(models.Model):
+    word = models.CharField(max_length=max_length)
+    phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
+    rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
+    glove = ArrayField(models.FloatField(), null=True)
+
+class RhymeCouplet(models.Model):
+    word1 = models.ForeignKey(Word, related_name='word1', on_delete=models.CASCADE)
+    word2 = models.ForeignKey(Word, related_name='word2', on_delete=models.CASCADE)
+    glove = ArrayField(models.FloatField(), null=True)
+
+class RhymeFind(models.Model):
+    word = models.ForeignKey(Word, on_delete=models.CASCADE)
+    rhyme_couplet = models.ForeignKey(RhymeCouplet, on_delete=models.CASCADE)
+    nsfw = models.BooleanField(default=False)
+
+class Upvote(models.Model):
+    rhymefind = models.ForeignKey(RhymeFind, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=datetime.now, blank=True)
+    up = models.BooleanField()
+
 
 # rhyme couplet glove model
 class RhymeCouplet32dIND(models.Model):
