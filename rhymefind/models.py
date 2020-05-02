@@ -8,15 +8,22 @@ NOTE: DJANGO does not actually update the schema of the db when you add a defaul
 '''
 
 class Word(models.Model):
+    
     word = models.CharField(max_length=max_length)
     phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
     glove = ArrayField(models.FloatField(), null=True)
+    
+    def __str__(self):
+        return '{word} ({phoneme_seq})'.format(word=self.word, phoneme_seq=self.phoneme_seq)
 
 class RhymeCouplet(models.Model):
     word1 = models.ForeignKey(Word, related_name='word1', on_delete=models.CASCADE)
     word2 = models.ForeignKey(Word, related_name='word2', on_delete=models.CASCADE)
     glove = ArrayField(models.FloatField(), null=True)
+
+    def __str__(self):
+        return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
 
 class RhymeFind(models.Model):
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
