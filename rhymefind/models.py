@@ -33,6 +33,7 @@ class RhymeFind(models.Model):
     word = models.ForeignKey(Word, on_delete=models.CASCADE)
     rhyme_couplet = models.ForeignKey(RhymeCouplet, on_delete=models.CASCADE)
     nsfw = models.BooleanField(default=False)
+    find_distance = models.FloatField(null=True)
 
     def __str__(self):
         return '{word}: {couplet}'.format(word=self.word, couplet=str(self.rhyme_couplet))
@@ -45,7 +46,7 @@ class Upvote(models.Model):
 
     def __str__(self):
         vote = '+1' if self.up else '-1'
-        return '{up}: {rf}, {date}'.format(up=vote, rf=self.rhymefind, date=self.date)
+        return '{up}: {rf}, {date}'.format(up=vote, rf=str(self.rhymefind), date=self.date)
 
 
 # rhyme couplet glove model
