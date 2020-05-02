@@ -23,7 +23,7 @@ class RhymeCouplet(models.Model):
         Word, related_name='word1', on_delete=models.CASCADE)
     word2 = models.ForeignKey(
         Word, related_name='word2', on_delete=models.CASCADE)
-    glove = ArrayField(models.FloatField(), null=True)
+    glove_mean = ArrayField(models.FloatField(), null=True)
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
