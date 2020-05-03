@@ -17,6 +17,9 @@ class Word(models.Model):
     def __str__(self):
         return '{word} ({phoneme_seq})'.format(word=self.word, phoneme_seq=self.phoneme_seq)
 
+    class Meta:
+        unique_together = (('word', 'phoneme_seq'),)
+
 
 class RhymeCouplet(models.Model):
     word1 = models.ForeignKey(
@@ -24,6 +27,9 @@ class RhymeCouplet(models.Model):
     word2 = models.ForeignKey(
         Word, related_name='word2', on_delete=models.CASCADE)
     glove_mean = ArrayField(models.FloatField(), null=True)
+
+    class Meta:
+        unique_together = (('word1', 'word2'),)
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
