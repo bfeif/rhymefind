@@ -92,8 +92,7 @@ class Glove32dIND(models.Model):
 
     # fields
     word = models.CharField(max_length=max_length)
-    nsfw = models.BooleanField(default=False)
-
+    
     # indexes
     class Meta:
         indexes = [
