@@ -19,6 +19,8 @@ class Word(models.Model):
 
     class Meta:
         unique_together = (('word', 'phoneme_seq'),)
+for i in range(32):
+    Word.add_to_class('glove_' + str(i), models.FloatField(null=True))
 
 
 class RhymeCouplet(models.Model):
@@ -33,6 +35,9 @@ class RhymeCouplet(models.Model):
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
+for i in range(32):
+    RhymeCouplet.add_to_class(
+        'glove_mean_' + str(i), models.FloatField(null=True))
 
 
 class RhymeFind(models.Model):
@@ -92,7 +97,7 @@ class Glove32dIND(models.Model):
 
     # fields
     word = models.CharField(max_length=max_length)
-    
+
     # indexes
     class Meta:
         indexes = [
