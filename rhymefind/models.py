@@ -15,7 +15,7 @@ class Word(models.Model):
     glove = ArrayField(models.FloatField(), null=True)
 
     def __str__(self):
-        return '{word} ({phoneme_seq})'.format(word=self.word, phoneme_seq=self.phoneme_seq)
+        return '{word}'.format(word=self.word, phoneme_seq=self.phoneme_seq)
 
     class Meta:
         unique_together = (('word', 'phoneme_seq'),)
