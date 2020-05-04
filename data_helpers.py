@@ -21,7 +21,7 @@ def process_cmu_line(x):
     CMU loading helper function
     '''
     splitted = x.split()
-    return (re.sub(r"\(.*?\)","",splitted[0].lower()), splitted[1:])
+    return (splitted[0].lower(), splitted[1:])
 
 
 def convert_phoneme_seq_to_rhyme_seq(phoneme_seq):
@@ -35,11 +35,16 @@ def convert_phoneme_seq_to_rhyme_seq(phoneme_seq):
         return tuple(phoneme_seq)
 
 
-def load_cmu_dict(exclude_non_nltk_words=True):
+def load_cmu_dict(exclude_non_nltk_words=True, include_repeats=False):
     '''
     Loads cmu dictionary to a dataframe of columns [word<str>, phoneme_seq<List[str]>, rhyme_seq<List[str]>]
     '''
     cmu_records = map(process_cmu_line, open('./data/cmudict.txt').readlines())
+    reg = r"\(.*?\)"
+    if include_repeats:
+        cmu_records = map(lambda x: (re.sub(reg, "" ,x[0]), x[1]), cmu_records)
+    else:
+        cmu_records = filter(lambda x: (re.sub(reg, "" ,x[0]), x[1]), cmu_records)
     rhyme_dict = pd.DataFrame(cmu_records, columns=['word', 'phoneme_seq'])
     if exclude_non_nltk_words:
         from nltk.corpus import words
