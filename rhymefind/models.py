@@ -9,7 +9,7 @@ NOTE: DJANGO does not actually update the schema of the db when you add a defaul
 
 class Word(models.Model):
 
-    word = models.CharField(max_length=max_length)
+    word = models.CharField(max_length=max_length, db_index=True)
     phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
     glove = ArrayField(models.FloatField(), null=True)
@@ -57,9 +57,6 @@ class Upvote(models.Model):
 
 # rhyme couplet glove model
 class RhymeCouplet32dIND(models.Model):
-
-    # fields to add
-    nsfw = models.BooleanField(default=False)
 
     # fields from Python model
     word_1 = models.CharField(max_length=max_length)
