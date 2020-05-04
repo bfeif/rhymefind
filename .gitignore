@@ -9,6 +9,7 @@ staticfiles/*
 time_tester.py
 fill_rhyme_pair_neighbors_attr.py
 temp.json
+*.pkl
 
 ### OSX ###
 .DS_Store
