@@ -40,7 +40,7 @@ class RhymeCouplet(models.Model):
             models.Index(fields=['word1', 'word2'],name="RC_wordpair_idx"),
             models.Index(fields=['word1'], name="RC_word1_idx"),
             models.Index(fields=['word2'], name="RC_word2_idx")
-        ]
+        ] + [models.Index(fields=['glove_mean_{}'.format(i)], name='RC_glove_mean_{}_idx'.format(i)) for i in range(32)]
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
