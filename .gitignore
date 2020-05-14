@@ -10,6 +10,7 @@ time_tester.py
 fill_rhyme_pair_neighbors_attr.py
 temp.json
 *.pkl
+*.csv
 
 ### OSX ###
 .DS_Store
@@ -88,6 +89,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# jupyter notebooks
+*.ipynb
 
 ### Django ###
 *.log
