@@ -22,6 +22,9 @@ class Word(models.Model):
     def __str__(self):
         return '{word}'.format(word=self.word, phoneme_seq=self.phoneme_seq)
 
+    def find_rhymes(self):
+        return RhymeFind.objects.filter(word=self)
+
 for i in range(32):
     Word.add_to_class('glove_' + str(i), models.FloatField(null=True))
 
@@ -36,7 +39,7 @@ class RhymeCouplet(models.Model):
     class Meta:
         unique_together = (('word1', 'word2'),)
         indexes = [
-            models.Index(fields=['word1', 'word2'],name="RC_wordpair_idx"),
+            models.Index(fields=['word1', 'word2'], name="RC_wordpair_idx"),
             models.Index(fields=['word1'], name="RC_word1_idx"),
             models.Index(fields=['word2'], name="RC_word2_idx")
         ] + [models.Index(fields=['glove_mean_{}'.format(i)], name='RC_glove_mean_{}_idx'.format(i)) for i in range(32)]
@@ -54,6 +57,11 @@ class RhymeFind(models.Model):
     rhyme_couplet = models.ForeignKey(RhymeCouplet, on_delete=models.CASCADE, db_index=True)
     nsfw = models.BooleanField(default=False)
     find_distance = models.FloatField(null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['word'], name='RF_word_idx')
+        ]
 
     def __str__(self):
         return '{word}: {couplet}'.format(word=self.word, couplet=str(self.rhyme_couplet))
