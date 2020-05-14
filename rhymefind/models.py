@@ -14,14 +14,14 @@ class Word(models.Model):
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
     glove = ArrayField(models.FloatField(), null=True)
 
-    def __str__(self):
-        return '{word}'.format(word=self.word, phoneme_seq=self.phoneme_seq)
-
     class Meta:
         unique_together = (('word', 'phoneme_seq'),)
         indexes = [
             models.Index(fields=['word'], name="Word_word_idx")
         ]
+    def __str__(self):
+        return '{word}'.format(word=self.word, phoneme_seq=self.phoneme_seq)
+
 for i in range(32):
     Word.add_to_class('glove_' + str(i), models.FloatField(null=True))
 
@@ -33,7 +33,6 @@ class RhymeCouplet(models.Model):
         Word, related_name='word2', on_delete=models.CASCADE, db_index=True)
     glove_mean = ArrayField(models.FloatField(), null=True)
 
-    # indexes
     class Meta:
         unique_together = (('word1', 'word2'),)
         indexes = [
@@ -44,6 +43,7 @@ class RhymeCouplet(models.Model):
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
+
 for i in range(32):
     RhymeCouplet.add_to_class(
         'glove_mean_' + str(i), models.FloatField(null=True))
