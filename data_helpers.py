@@ -6,7 +6,8 @@ import re
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 glove_data_path = './data/glove.6B/glove.6B.{}d.txt'
-
+from nltk.corpus import words
+nltk_words = set(words.words())
 
 def process_glove_line(x):
     '''
@@ -47,8 +48,6 @@ def load_cmu_dict(exclude_non_nltk_words=True, include_repeats=False):
         cmu_records = filter(lambda x: (re.sub(reg, "" ,x[0]), x[1]), cmu_records)
     rhyme_dict = pd.DataFrame(cmu_records, columns=['word', 'phoneme_seq'])
     if exclude_non_nltk_words:
-        from nltk.corpus import words
-        nltk_words = set(words.words())
         nltk_words_mask = rhyme_dict.word.isin(nltk_words)
         rhyme_dict = rhyme_dict.loc[nltk_words_mask, :]
     rhyme_dict['rhyme_seq'] = rhyme_dict.phoneme_seq.apply(
@@ -69,7 +68,7 @@ def load_glove_dict(glove_dimensions=50, dimensions_to_reduce_to=-1):
     if dimensions_to_reduce_to == -1:
         
         # return
-        return df
+        pass
 
     # else it does, then do the reduction and return the reduced frame
     else:
@@ -82,7 +81,13 @@ def load_glove_dict(glove_dimensions=50, dimensions_to_reduce_to=-1):
         new_df = pd.concat([df['word'], reduced_df], axis=1)
     
         # return
-        return new_df
+        df = new_df
+
+    # add a column for is_english
+    df['is_english'] = df.word.isin(nltk_words)
+
+    # return the df
+    return df
 
 
 def reduce_glove_dimensionality(array, dimensions_to_reduce_to, plot=False):
