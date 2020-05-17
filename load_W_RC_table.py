@@ -19,22 +19,43 @@ from tqdm import tqdm
 from data_helpers import *
 import numpy as np
 
+# AWS imports
+from boto3.session import Session
+import boto3
+import os, sys
+
+# AWS stuff
+aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+bucket_name = 'rhymefind-data-02'
+s3 = boto3.client('s3')
+
 # config variables
-GLOVE_LOCATION = './data/glove.6B/glove.6B.{}d.txt'
-LOAD_GLOVE_DIMENSIONS = 50
-SAVE_GLOVE_DIMENSIONS = 32
-CMU_LOCATION = './data/cmudict.txt'
+GLOVE_LOCATION = 'data/glove.6B/glove.6B.{}d.txt'
+CMU_LOCATION = 'data/cmudict.txt'
 
 ############
 # LOAD THE WORD TABLE
 # load the cmu dictionary to a dataframe
-rhyme_df = load_cmu_dict(CMU_LOCATION, exclude_non_nltk_words=True, include_repeats=False)
+with open('temp_daddy.csv', 'w') as f:
+	s3.download_fileobj(bucket_name, CMU_LOCATION, f)
+rhyme_df = load_cmu_dict('temp_daddy.csv', exclude_non_nltk_words=True, include_repeats=False)
 
 # load glove data to dataframe
 glove_names = ['glove_'+str(i) for i in range(32)]
-glove_df = load_glove_dict(GLOVE_LOCATION.format(str(100)))
-glove_df32 = load_glove_dict(GLOVE_LOCATION.format(LOAD_GLOVE_DIMENSIONS), dimensions_to_reduce_to=SAVE_GLOVE_DIMENSIONS)
+
+# the 100 glove:
+with open('temp_daddy.csv', 'w') as f:
+	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(100)), f)
+glove_df = load_glove_dict('temp_daddy.csv')
+
+# and the 32 glove
+with open('temp_daddy.csv', 'w') as f:
+	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(50)), f)
+glove_df32 = load_glove_dict('temp_daddy.csv', dimensions_to_reduce_to=32)
 glove_df32[glove_names] = pd.DataFrame(glove_df32.glove.to_list())
+
+# make the complete glove_df
 glove_df = pd.concat([glove_df, glove_df32[glove_names]], axis=1)
 
 # inner join the rhyme_df and the glove_df
