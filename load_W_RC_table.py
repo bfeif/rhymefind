@@ -37,7 +37,7 @@ CMU_LOCATION = 'data/cmudict.txt'
 ############
 # LOAD THE WORD TABLE
 # load the cmu dictionary to a dataframe
-with open('temp_daddy.csv', 'w') as f:
+with open('temp_daddy.csv', 'wb') as f:
 	s3.download_fileobj(bucket_name, CMU_LOCATION, f)
 rhyme_df = load_cmu_dict('temp_daddy.csv', exclude_non_nltk_words=True, include_repeats=False)
 
@@ -45,12 +45,12 @@ rhyme_df = load_cmu_dict('temp_daddy.csv', exclude_non_nltk_words=True, include_
 glove_names = ['glove_'+str(i) for i in range(32)]
 
 # the 100 glove:
-with open('temp_daddy.csv', 'w') as f:
+with open('temp_daddy.csv', 'wb') as f:
 	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(100)), f)
 glove_df = load_glove_dict('temp_daddy.csv')
 
 # and the 32 glove
-with open('temp_daddy.csv', 'w') as f:
+with open('temp_daddy.csv', 'wb') as f:
 	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(50)), f)
 glove_df32 = load_glove_dict('temp_daddy.csv', dimensions_to_reduce_to=32)
 glove_df32[glove_names] = pd.DataFrame(glove_df32.glove.to_list())
