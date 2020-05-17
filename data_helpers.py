@@ -36,11 +36,11 @@ def convert_phoneme_seq_to_rhyme_seq(phoneme_seq):
         return tuple(phoneme_seq)
 
 
-def load_cmu_dict(exclude_non_nltk_words=True, include_repeats=False):
+def load_cmu_dict(data_loc, exclude_non_nltk_words=True, include_repeats=False):
     '''
     Loads cmu dictionary to a dataframe of columns [word<str>, phoneme_seq<List[str]>, rhyme_seq<List[str]>]
     '''
-    cmu_records = map(process_cmu_line, open('./data/cmudict.txt').readlines())
+    cmu_records = map(process_cmu_line, open(data_loc).readlines())
     reg = r"\(.*?\)"
     if include_repeats:
         cmu_records = map(lambda x: (re.sub(reg, "" ,x[0]), x[1]), cmu_records)
@@ -55,14 +55,13 @@ def load_cmu_dict(exclude_non_nltk_words=True, include_repeats=False):
     return rhyme_dict
 
 
-def load_glove_dict(glove_dimensions=50, dimensions_to_reduce_to=-1):
+def load_glove_dict(data_loc, dimensions_to_reduce_to=-1):
     '''
     Loads glove dictionary to a dataframe of columns [word<str>, glove<np.array[float]>]
     '''
 
     # create the dataframe
-    df = pd.DataFrame(map(process_glove_line, open(glove_data_path.format(
-        glove_dimensions)).readlines()), columns=['word', 'glove'])
+    df = pd.DataFrame(map(process_glove_line, open(data_loc).readlines()), columns=['word', 'glove'])
 
     # if dimensionality doesn't need to be reduced, then just return
     if dimensions_to_reduce_to == -1:
