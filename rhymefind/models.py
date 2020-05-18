@@ -9,7 +9,7 @@ NOTE: DJANGO does not actually update the schema of the db when you add a defaul
 
 class Word(models.Model):
 
-    word = models.CharField(max_length=max_length, db_index=True)
+    word = models.CharField(max_length=max_length, db_index=True, unique=True)
     phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
     is_english = models.BooleanField(default=False)
