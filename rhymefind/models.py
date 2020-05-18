@@ -12,7 +12,6 @@ class Word(models.Model):
     word = models.CharField(max_length=max_length, db_index=True)
     phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
-    glove = ArrayField(models.FloatField(), null=True)
     is_english = models.BooleanField(default=False)
 
     class Meta:
