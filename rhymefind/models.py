@@ -34,7 +34,6 @@ class RhymeCouplet(models.Model):
         Word, related_name='word1', on_delete=models.CASCADE, db_index=True)
     word2 = models.ForeignKey(
         Word, related_name='word2', on_delete=models.CASCADE, db_index=True)
-    glove_mean = ArrayField(models.FloatField(), null=True)
 
     class Meta:
         unique_together = (('word1', 'word2'),)
