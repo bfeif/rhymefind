@@ -13,6 +13,7 @@ class Word(models.Model):
     phoneme_seq = ArrayField(models.CharField(max_length=3), null=True)
     rhyme_seq = ArrayField(models.CharField(max_length=3), null=True)
     is_english = models.BooleanField(default=False)
+    num_finds = models.IntegerField(default=0)
 
     class Meta:
         unique_together = (('word', 'phoneme_seq'),)
