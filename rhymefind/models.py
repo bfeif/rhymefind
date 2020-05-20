@@ -59,6 +59,7 @@ class RhymeFind(models.Model):
     find_distance = models.FloatField(null=True)
 
     class Meta:
+        unique_together = (('word', 'rhyme_couplet'),)
         indexes = [
             models.Index(fields=['word'], name='RF_word_idx')
         ]
