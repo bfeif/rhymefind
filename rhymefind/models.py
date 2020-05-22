@@ -1,7 +1,13 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.db.models import Func, F, Q
 from datetime import datetime
 max_length = 100
+couplet_glove_names = ['glove_mean_' +
+                       str(i) for i in range(32)]
+word_glove_names = ['glove_' + str(i) for i in range(32)]
+zipped_names = list(zip(couplet_glove_names, word_glove_names))
+window_size = 2.5
 
 '''
 NOTE: DJANGO does not actually update the schema of the db when you add a default value to a column
@@ -25,6 +31,33 @@ class Word(models.Model):
 
     def find_rhymes(self):
         return RhymeFind.objects.filter(word=self)
+
+    def find_rhymes_deep(self, window_size=2.5):
+        # build the filter box query arguments
+        lt_filter_kwargs = {couplet_glove_name + '__gte': getattr(self, word_glove_name) - window_size / 2 for
+                            couplet_glove_name, word_glove_name in zipped_names}
+        gt_filter_kwargs = {couplet_glove_name + '__lte': getattr(self, word_glove_name) + window_size / 2 for
+                            couplet_glove_name, word_glove_name in zipped_names}
+        lt_filter_kwargs.update(gt_filter_kwargs)
+
+        # do the box pre-query
+        boxed_couplets = RhymeCouplet.objects.\
+            filter(~Q(word1=self)).\
+            filter(~Q(word2=self)).\
+            filter(**lt_filter_kwargs)
+
+        # now order the stuff in the box
+        ordered_couplets = boxed_couplets.annotate(
+            abs_diff=Func(
+                sum([(F(couplet_glove_name) - getattr(self, word_glove_name))
+                                 ** 2 for couplet_glove_name, word_glove_name in zipped_names]),
+                function='ABS'
+            )).\
+            order_by('abs_diff')
+        length_all_results = len(ordered_couplets)
+        result_length = min(15, length_all_results)
+        top_couplets = ordered_couplets[:result_length]
+        return top_couplets
 
 for i in range(32):
     Word.add_to_class('glove_' + str(i), models.FloatField(null=True))
