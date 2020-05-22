@@ -10,13 +10,13 @@
 	{# print result #}
 	{% if found_word %}
 
-	<p><strong>Input: </strong>{{ found_word.word}}</p>
+	<p><strong>Input: </strong>{{ found_word.word }}</p>
 
 	<p><strong>Output: </strong></p>
 	<ol>
-		{% for couplet in couplets %}
+		{% for find in rhymefinds %}
 		<li>
-			{{ couplet.word_1 }} {{ couplet.word_2 }}
+			{{ find.rhyme_couplet.word1 }} {{ find.rhyme_couplet.word2 }}
 		</li>
 		{% endfor %}
 	</ol>
