@@ -11,6 +11,11 @@ fill_rhyme_pair_neighbors_attr.py
 temp.json
 *.pkl
 *.csv
+*.json
+
+load_RF_table.py
+load_W_RC_table.py
+
 
 ### OSX ###
 .DS_Store
