@@ -6,7 +6,6 @@ from .models import Word
 # Configure logger
 import logging
 logger = logging.getLogger(__name__)
-GLOVE_DIMENSIONS = 32
 fun_words = ['pirate', 'paper', 'marriage', 'believe', 'indigenous', 'radical', 'coup', 'feast', 'archaeologist', 'blunt',
              'leader', 'raft', 'trade', 'newspaper', 'manager', 'football', 'prostitute', 'computer']
 
