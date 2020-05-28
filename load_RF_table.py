@@ -55,7 +55,7 @@ def get_top_rcs(word):
 	return length_all_results, top_couplets
 
 # for each word, query
-for word in tqdm(Word.objects.filter(is_english=True).all()):
+for word in tqdm(Word.objects.filter(is_english=True).filter(num_finds=0).all()):
 	
 	# get the top rhyme couplets
 	len_all_results, top_couplets = get_top_rcs(word)
@@ -69,3 +69,6 @@ for word in tqdm(Word.objects.filter(is_english=True).all()):
 			nsfw=False
 			)
 		rf.save()
+
+	word.num_finds = len(top_couplets)
+	word.save()

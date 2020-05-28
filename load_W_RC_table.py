@@ -18,11 +18,12 @@ import pandas as pd
 from tqdm import tqdm
 from data_helpers import *
 import numpy as np
+import ujson as json
+import os, sys
 
 # AWS imports
 from boto3.session import Session
 import boto3
-import os, sys
 
 # AWS stuff
 aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID')
@@ -44,19 +45,11 @@ rhyme_df = load_cmu_dict('temp_daddy.csv', exclude_non_nltk_words=True, include_
 # load glove data to dataframe
 glove_names = ['glove_'+str(i) for i in range(32)]
 
-# the 100 glove:
-with open('temp_daddy.csv', 'wb') as f:
-	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(100)), f)
-glove_df = load_glove_dict('temp_daddy.csv')
-
 # and the 32 glove
 with open('temp_daddy.csv', 'wb') as f:
 	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(50)), f)
-glove_df32 = load_glove_dict('temp_daddy.csv', dimensions_to_reduce_to=32)
-glove_df32[glove_names] = pd.DataFrame(glove_df32.glove.to_list())
-
-# make the complete glove_df
-glove_df = pd.concat([glove_df, glove_df32[glove_names]], axis=1)
+glove_df = load_glove_dict('temp_daddy.csv', dimensions_to_reduce_to=32)
+glove_df[glove_names] = pd.DataFrame(glove_df.glove.to_list())
 
 # inner join the rhyme_df and the glove_df
 word_df = glove_df.merge(rhyme_df, how='left', left_on='word', right_on='word')
@@ -64,14 +57,26 @@ word_df = glove_df.merge(rhyme_df, how='left', left_on='word', right_on='word')
 # replace NaNs with None
 word_df = word_df.where(word_df.notnull(), None)
 
+# drop the glove column
+word_df.drop(columns=['glove'], inplace=True)
+
+# write out
+with open('poo.csv', 'w') as f:
+	for row_num, row in word_df.iterrows():
+		f.write(json.dumps(row.to_dict()))
+		f.write('\n')
+
+for row in open('poo.csv', 'r'):
+	d = json.loads(row)
+	print(d)
+	Word(**d).save()
+
+
 # load the table
 for row_number, row in tqdm(list(word_df.iterrows())):
 	row_dict = row.to_dict()
-	if type(row_dict['glove'])==np.ndarray:
-		row_dict['glove'] = row_dict['glove'].tolist()
 	new_Word = Word(**row_dict)
 	new_Word.save()
-
 
 ############
 # LOAD THE RHYMECOUPLET TABLE
@@ -90,12 +95,14 @@ rhyme_couplet_df['word_tuple'] = rhyme_couplet_df.apply(
 rhyme_couplet_df.drop_duplicates(subset=['word_tuple'], inplace=True)
 
 # get glove_mean
-rhyme_couplet_df['glove_mean'] = np.split((np.vstack(rhyme_couplet_df['glove_1']) + np.vstack(
-	rhyme_couplet_df['glove_2'])) / 2, indices_or_sections=len(rhyme_couplet_df), axis=0)
-rhyme_couplet_df.glove_mean = rhyme_couplet_df.glove_mean.apply(lambda x: x.flatten().tolist())
+for i in range(32):
+	rhyme_couplet_df['glove_mean_{}'.format(str(i))] = (rhyme_couplet_df['glove_{}_1'.format(str(i))] + rhyme_couplet_df['glove_{}_2'.format(str(i))])/2
 
 # drop superfluous columns
-rhyme_couplet_df.drop(columns=['glove_1', 'glove_2', 'word_tuple', 'phoneme_seq_1', 'phoneme_seq_2', 'rhyme_seq'], inplace=True)
+g1_cols = ['glove_{}_1'.format(str(i)) for i in range(32)]
+g2_cols = ['glove_{}_2'.format(str(i)) for i in range(32)]
+drop_cols = g1_cols + g2_cols + ['word_tuple', 'phoneme_seq_1', 'phoneme_seq_2', 'rhyme_seq', 'is_english_1', 'is_english_2']
+rhyme_couplet_df.drop(columns=drop_cols, inplace=True)
 
 # get the glove_mean for the glove_ind columns
 for i in range(32):
@@ -112,3 +119,20 @@ for row_number, row in tqdm(list(rhyme_couplet_df.iterrows())):
 		row_dict['word'+attr] = Word.objects.get(word=row_dict['word'+attr])#, phoneme_seq=row_dict['phoneme_seq'+attr])
 	new_RhymeCouplet = RhymeCouplet(**row_dict)
 	new_RhymeCouplet.save()
+
+
+# the actual load part of the rhymecouplets
+with open('temp_daddy.json', 'wb') as f: 
+    s3.download_fileobj(bucket_name, 'data/RCs.json', f)
+for rc in tqdm(rcs):
+	w1 = Word.objects.get(word=rc['word1'])
+	w2 = Word.objects.get(word=rc['word2'])
+	glove_d = {'glove_mean_{}'.format(str(i)): (getattr(w1, 'glove_{}'.format(str(i))) + getattr(w2, 'glove_{}'.format(str(i))))/2 for i in range(32)}
+	d = {**glove_d, 'word1': w1, 'word2': w2}
+	RhymeCouplet(**d).save()
+
+# and a little loop to write out the rhymefinds
+glove_cols = ['glove_{}'.format(str(i)) for i in range(32)]
+glove_mean_cols = ['glove_mean_'+str(i) for i in range(32)]
+for row_num, row in word_df.iterrows():
+	print(row)
