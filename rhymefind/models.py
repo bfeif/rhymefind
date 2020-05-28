@@ -90,6 +90,7 @@ class RhymeFind(models.Model):
     rhyme_couplet = models.ForeignKey(RhymeCouplet, on_delete=models.CASCADE, db_index=True)
     nsfw = models.BooleanField(default=False)
     find_distance = models.FloatField(null=True)
+    is_user_added = models.BooleanField(default=True)
 
     class Meta:
         unique_together = (('word', 'rhyme_couplet'),)
