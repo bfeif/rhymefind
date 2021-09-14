@@ -38,7 +38,7 @@ CMU_LOCATION = 'data/cmudict.txt'
 # LOAD THE WORD TABLE
 # load the cmu dictionary to a dataframe
 with open('temp_daddy.csv', 'wb') as f:
-	s3.download_fileobj(bucket_name, CMU_LOCATION, f)
+    s3.download_fileobj(bucket_name, CMU_LOCATION, f)
 rhyme_df = load_cmu_dict('temp_daddy.csv', exclude_non_nltk_words=True, include_repeats=False)
 
 # load glove data to dataframe
@@ -46,12 +46,12 @@ glove_names = ['glove_'+str(i) for i in range(32)]
 
 # the 100 glove:
 with open('temp_daddy.csv', 'wb') as f:
-	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(100)), f)
+    s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(100)), f)
 glove_df = load_glove_dict('temp_daddy.csv')
 
 # and the 32 glove
 with open('temp_daddy.csv', 'wb') as f:
-	s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(50)), f)
+    s3.download_fileobj(bucket_name, GLOVE_LOCATION.format(str(50)), f)
 glove_df32 = load_glove_dict('temp_daddy.csv', dimensions_to_reduce_to=32)
 glove_df32[glove_names] = pd.DataFrame(glove_df32.glove.to_list())
 
@@ -66,11 +66,11 @@ word_df = word_df.where(word_df.notnull(), None)
 
 # load the table
 for row_number, row in tqdm(list(word_df.iterrows())):
-	row_dict = row.to_dict()
-	if type(row_dict['glove'])==np.ndarray:
-		row_dict['glove'] = row_dict['glove'].tolist()
-	new_Word = Word(**row_dict)
-	new_Word.save()
+    row_dict = row.to_dict()
+    if type(row_dict['glove'])==np.ndarray:
+        row_dict['glove'] = row_dict['glove'].tolist()
+    new_Word = Word(**row_dict)
+    new_Word.save()
 
 
 ############
@@ -86,12 +86,12 @@ rhyme_couplet_df = rhyme_couplet_df[rhyme_couplet_df.word_1 != rhyme_couplet_df.
 
 # get rid of duplicates, e.g. ['and', 'band'] vs ['band', 'and']
 rhyme_couplet_df['word_tuple'] = rhyme_couplet_df.apply(
-	lambda x: tuple(sorted([x['word_1'], x['word_2']])), axis=1)
+    lambda x: tuple(sorted([x['word_1'], x['word_2']])), axis=1)
 rhyme_couplet_df.drop_duplicates(subset=['word_tuple'], inplace=True)
 
 # get glove_mean
 rhyme_couplet_df['glove_mean'] = np.split((np.vstack(rhyme_couplet_df['glove_1']) + np.vstack(
-	rhyme_couplet_df['glove_2'])) / 2, indices_or_sections=len(rhyme_couplet_df), axis=0)
+    rhyme_couplet_df['glove_2'])) / 2, indices_or_sections=len(rhyme_couplet_df), axis=0)
 rhyme_couplet_df.glove_mean = rhyme_couplet_df.glove_mean.apply(lambda x: x.flatten().tolist())
 
 # drop superfluous columns
@@ -99,16 +99,16 @@ rhyme_couplet_df.drop(columns=['glove_1', 'glove_2', 'word_tuple', 'phoneme_seq_
 
 # get the glove_mean for the glove_ind columns
 for i in range(32):
-	rhyme_couplet_df['glove_mean_'+str(i)] = rhyme_couplet_df[['glove_{}_1'.format(i), 'glove_{}_2'.format(i)]].mean(axis=1)
-	rhyme_couplet_df.drop(columns=['glove_{}_1'.format(i), 'glove_{}_2'.format(i)], inplace=True)
+    rhyme_couplet_df['glove_mean_'+str(i)] = rhyme_couplet_df[['glove_{}_1'.format(i), 'glove_{}_2'.format(i)]].mean(axis=1)
+    rhyme_couplet_df.drop(columns=['glove_{}_1'.format(i), 'glove_{}_2'.format(i)], inplace=True)
 
 # rename the word columns
 rhyme_couplet_df.rename(columns={'word_1': 'word1', 'word_2': 'word2'}, inplace=True)
 
 # load the table
 for row_number, row in tqdm(list(rhyme_couplet_df.iterrows())):
-	row_dict = row.to_dict()
-	for attr in ['1', '2']:
-		row_dict['word'+attr] = Word.objects.get(word=row_dict['word'+attr])#, phoneme_seq=row_dict['phoneme_seq'+attr])
-	new_RhymeCouplet = RhymeCouplet(**row_dict)
-	new_RhymeCouplet.save()
+    row_dict = row.to_dict()
+    for attr in ['1', '2']:
+        row_dict['word'+attr] = Word.objects.get(word=row_dict['word'+attr])#, phoneme_seq=row_dict['phoneme_seq'+attr])
+    new_RhymeCouplet = RhymeCouplet(**row_dict)
+    new_RhymeCouplet.save()

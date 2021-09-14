@@ -21,51 +21,52 @@ import numpy as np
 ############
 # LOAD THE RHYMEFIND table
 # constants for index view
-couplet_glove_names = ['glove_mean_' +
-					   str(i) for i in range(32)]
+couplet_glove_names = ['glove_mean_' + str(i) for i in range(32)]
 word_glove_names = ['glove_' + str(i) for i in range(32)]
 zipped_names = list(zip(couplet_glove_names, word_glove_names))
 window_size = 2.5
 
+
 def get_top_rcs(word):
-	# build the filter box query arguments
-	lt_filter_kwargs = {couplet_glove_name + '__gte': getattr(word, word_glove_name) - window_size / 2 for
-						couplet_glove_name, word_glove_name in zipped_names}
-	gt_filter_kwargs = {couplet_glove_name + '__lte': getattr(word, word_glove_name) + window_size / 2 for
-						couplet_glove_name, word_glove_name in zipped_names}
-	lt_filter_kwargs.update(gt_filter_kwargs)
+    # build the filter box query arguments
+    lt_filter_kwargs = {couplet_glove_name + '__gte': getattr(word, word_glove_name) - window_size / 2 for
+                        couplet_glove_name, word_glove_name in zipped_names}
+    gt_filter_kwargs = {couplet_glove_name + '__lte': getattr(word, word_glove_name) + window_size / 2 for
+                        couplet_glove_name, word_glove_name in zipped_names}
+    lt_filter_kwargs.update(gt_filter_kwargs)
 
-	# do the box pre-query
-	boxed_couplets = RhymeCouplet.objects.\
-		filter(~Q(word1=word)).\
-		filter(~Q(word2=word)).\
-		filter(**lt_filter_kwargs)
+    # do the box pre-query
+    boxed_couplets = RhymeCouplet.objects.\
+        filter(~Q(word1=word)).\
+        filter(~Q(word2=word)).\
+        filter(**lt_filter_kwargs)
 
-	# now order the stuff in the box
-	ordered_couplets = boxed_couplets.annotate(
-		abs_diff=Func(
-			sum([(F(couplet_glove_name) - getattr(word, word_glove_name))
-							 ** 2 for couplet_glove_name, word_glove_name in zipped_names]),
-			function='ABS'
-		)).\
-		order_by('abs_diff')
-	length_all_results = len(ordered_couplets)
-	result_length = min(15, length_all_results)
-	top_couplets = ordered_couplets[:result_length]
-	return length_all_results, top_couplets
+    # now order the stuff in the box
+    ordered_couplets = boxed_couplets.annotate(
+        abs_diff=Func(
+            sum([(F(couplet_glove_name) - getattr(word, word_glove_name))
+                             ** 2 for couplet_glove_name, word_glove_name in zipped_names]),
+            function='ABS'
+        )).\
+        order_by('abs_diff')
+    length_all_results = len(ordered_couplets)
+    result_length = min(15, length_all_results)
+    top_couplets = ordered_couplets[:result_length]
+    return length_all_results, top_couplets
+
 
 # for each word, query
 for word in tqdm(Word.objects.filter(is_english=True).all()):
-	
-	# get the top rhyme couplets
-	len_all_results, top_couplets = get_top_rcs(word)
+    
+    # get the top rhyme couplets
+    len_all_results, top_couplets = get_top_rcs(word)
 
-	# now store the rhymefinds to RhymeFind table
-	for rc in top_couplets:
-		rf = RhymeFind(
-			find_distance=np.sqrt(rc.abs_diff),
-			word=word,
-			rhyme_couplet=rc,
-			nsfw=False
-			)
-		rf.save()
+    # now store the rhymefinds to RhymeFind table
+    for rc in top_couplets:
+        rf = RhymeFind(
+            find_distance=np.sqrt(rc.abs_diff),
+            word=word,
+            rhyme_couplet=rc,
+            nsfw=False
+            )
+        rf.save()

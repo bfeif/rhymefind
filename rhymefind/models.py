@@ -13,6 +13,7 @@ window_size = 2.5
 NOTE: DJANGO does not actually update the schema of the db when you add a default value to a column
 '''
 
+
 class Word(models.Model):
 
     word = models.CharField(max_length=max_length, db_index=True, unique=True)
@@ -26,6 +27,7 @@ class Word(models.Model):
         indexes = [
             models.Index(fields=['word'], name="Word_word_idx")
         ]
+
     def __str__(self):
         return '{word}'.format(word=self.word, phoneme_seq=self.phoneme_seq)
 
@@ -59,6 +61,7 @@ class Word(models.Model):
         top_couplets = ordered_couplets[:result_length]
         return top_couplets
 
+
 for i in range(32):
     Word.add_to_class('glove_' + str(i), models.FloatField(null=True))
 
@@ -79,6 +82,7 @@ class RhymeCouplet(models.Model):
 
     def __str__(self):
         return '{word1} {word2}'.format(word1=self.word1, word2=self.word2)
+
 
 for i in range(32):
     RhymeCouplet.add_to_class(
