@@ -46,7 +46,7 @@ six==1.13.0
 sqlparse==0.3.0
 tqdm==4.41.0
 traitlets==4.3.3
-ujson==2.0.3
+ujson==5.2.0
 urllib3==1.24.3
 wcwidth==0.1.7
 whitenoise==5.0.1
