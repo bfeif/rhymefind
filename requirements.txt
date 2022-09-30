@@ -19,7 +19,7 @@ ipython==7.10.2
 ipython-genutils==0.2.0
 jedi==0.15.2
 jmespath==0.9.4
-joblib==0.14.1
+joblib==1.2.0
 kiwisolver==1.1.0
 matplotlib==3.1.2
 neo4j==1.7.6
